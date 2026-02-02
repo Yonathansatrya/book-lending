@@ -46,7 +46,15 @@ class StudentStatsWidget extends StatsOverviewWidget
                     Loan::where('user_id', $userId)
                         ->latest()
                         ->first()
-                )?->tanggal_pinjam?->format('d M Y') ?? '-'
+                )?->tanggal_pinjam
+                    ? \Illuminate\Support\Carbon::parse(
+                        optional(
+                            Loan::where('user_id', $userId)
+                                ->latest()
+                                ->first()
+                        )?->tanggal_pinjam
+                    )->format('d M Y')
+                    : '-'
             )
                 ->icon('heroicon-o-calendar'),
         ];
