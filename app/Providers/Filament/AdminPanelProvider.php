@@ -7,10 +7,15 @@ use Filament\PanelProvider;
 use Filament\Pages\Dashboard;
 use Filament\Support\Enums\Width;
 use Filament\Support\Colors\Color;
+use Spatie\Permission\Models\Role;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use App\Filament\Widgets\LoanChartWidget;
+use App\Filament\Widgets\AdminStatsWidget;
 use Filament\Http\Middleware\Authenticate;
+use App\Filament\Widgets\StudentStatsWidget;
 use Illuminate\Session\Middleware\StartSession;
+use App\Filament\Widgets\TopBorrowedBooksWidget;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -28,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('')
+            ->registration()
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -40,11 +46,22 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                // AccountWidget::class,
+                // FilamentInfoWidget::class,
+                AdminStatsWidget::class,
+                StudentStatsWidget::class,
+                LoanChartWidget::class,
+                TopBorrowedBooksWidget::class,
             ])
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                    ->navigationLabel('Role Management')
+                    ->navigationIcon('heroicon-o-home')
+                    ->activeNavigationIcon('heroicon-s-home')
+                    ->navigationGroup('Master Data')
+                    ->navigationSort(10)
+                    ->navigationBadge(Role::count())
+                    ->navigationBadgeColor('success'),
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -59,6 +76,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->spa();
     }
 }
