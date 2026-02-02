@@ -4,12 +4,13 @@ namespace App\Filament\Resources\Users\Tables;
 
 use Filament\Tables\Table;
 use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\SelectColumn;
+use App\Filament\Resources\Users\Schemas\UserForm;
 
 class UsersTable
 {
@@ -28,9 +29,14 @@ class UsersTable
                     ->label('NIS')
                     ->toggleable(),
 
-                TextColumn::make('kelas')
-                    ->label('Kelas')
-                    ->toggleable(),
+                SelectColumn::make('kelas')
+                    ->label('kelas')
+                    ->options([
+                        'X' => 'X',
+                        'XI' => 'XI',
+                        'XII' => 'XII',
+                    ])
+                    ->searchable(),
 
                 TextColumn::make('roles.name')
                     ->label('Role')
@@ -47,7 +53,13 @@ class UsersTable
             ])
             ->recordActions([
                 DeleteAction::make(),
-                EditAction::make(),
+
+                EditAction::make()
+                    ->modalHeading('Edit User')
+                    ->modalSubmitActionLabel('Update')
+                    ->schema(fn() => UserForm::configure(app(\Filament\Schemas\Schema::class))->getComponents())
+                    ->visible(fn() => auth()->user()->can('Update:User')),
+
                 ViewAction::make(),
             ])
             ->toolbarActions([

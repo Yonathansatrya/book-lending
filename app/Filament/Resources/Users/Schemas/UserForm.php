@@ -24,12 +24,22 @@ class UserForm
                 ->label('NIS')
                 ->visible(fn() => auth()->user()->can('update_user')),
 
-            TextInput::make('kelas')
+            Select::make('kelas')
+                // ->required()
+                ->options([
+                    'X' => 'X',
+                    'XI' => 'XI',
+                    'XII' => 'XII',
+                ])
                 ->label('Kelas'),
 
             Select::make('roles')
                 ->label('Role')
-                ->relationship('roles', 'name')
+                ->relationship('roles', 'name', function ($query) {
+                    if (auth()->user()?->hasRole('Admin')) {
+                        $query->where('name', '!=', 'super_admin');
+                    }
+                })
                 ->preload()
                 ->searchable()
                 ->required(),
