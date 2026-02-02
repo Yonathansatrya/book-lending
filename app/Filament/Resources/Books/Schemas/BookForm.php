@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Books\Schemas;
 
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 
@@ -12,35 +13,45 @@ class BookForm
     {
         return $schema
             ->schema([
-                TextInput::make('kode_buku')
-                    ->label('Kode Buku')
-                    ->required()
-                    ->unique(ignoreRecord: true),
+                Grid::make()
+                    ->gridContainer()
+                    ->columns([
+                        '@md' => 1,
+                        '@xl' => 2,
+                    ])
+                    ->schema([
 
-                TextInput::make('judul')
-                    ->label('Judul Buku')
-                    ->required(),
+                        TextInput::make('kode_buku')
+                            ->label('Kode Buku')
+                            ->required()
+                            ->unique(ignoreRecord: true),
 
-                TextInput::make('penulis')
-                    ->required(),
+                        TextInput::make('judul')
+                            ->label('Judul Buku')
+                            ->required(),
 
-                TextInput::make('penerbit')
-                    ->required(),
+                        TextInput::make('penulis')
+                            ->required(),
 
-                TextInput::make('tahun')
-                    ->numeric()
-                    ->required(),
+                        TextInput::make('penerbit')
+                            ->required(),
 
-                TextInput::make('stok')
-                    ->numeric()
-                    ->minValue(0)
-                    ->required(),
+                        TextInput::make('tahun')
+                            ->numeric()
+                            ->required(),
 
-                FileUpload::make('cover')
-                    ->label('Cover Buku')
-                    ->image()
-                    ->directory('book-covers')
-                    ->columnSpanFull(),
-            ])->columns(2);
+                        TextInput::make('stok')
+                            ->numeric()
+                            ->minValue(0)
+                            ->required(),
+
+                        FileUpload::make('cover')
+                            ->label('Cover Buku')
+                            ->image()
+                            ->directory('book-covers')
+                            ->columnSpanFull(),
+
+                    ])
+            ]);
     }
 }
