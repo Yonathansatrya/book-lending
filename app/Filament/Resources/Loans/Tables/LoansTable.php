@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Loans\Tables;
 
+use App\Filament\Resources\Loans\Schemas\LoanForm;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -33,18 +34,23 @@ class LoansTable
                 //
             ])
             ->recordActions([
-                DeleteAction::make(),
-                EditAction::make(),
+                DeleteAction::make()->visible(fn() => auth()->user()->can('Delete:Loan')),
+                EditAction::make()
+                    ->label('Edit Peminjaman')
+                    ->modalHeading('Edit Peminjaman')
+                    ->modalSubmitActionLabel('Simpan')
+                    ->schema(fn() => LoanForm::configure(app(\Filament\Schemas\Schema::class))->getComponents())
+                    ->visible(fn() => auth()->user()->can('Update:Loan')),
 
                 Action::make('kembalikan')
                     ->label('Kembalikan')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
-                    ->visible(
-                        fn($record) =>
-                        $record->status === 'dipinjam'
-                            && auth()->user()->can('update', $record->id)
-                    )
+                    // ->visible(
+                    //     fn($record) =>
+                    //     $record->status === 'dipinjam'
+                    //         && auth()->user()->can('update', $record->id)
+                    // )
                     ->requiresConfirmation()
                     ->action(function ($record) {
                         $record->update([
@@ -55,7 +61,7 @@ class LoansTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()->visible(fn() => auth()->user()->can('Delete:Loan')),
                 ]),
             ]);
     }

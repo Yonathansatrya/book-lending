@@ -54,8 +54,8 @@ class LoanResource extends Resource
     {
         return [
             'index'  => ListLoans::route('/'),
-            'create' => CreateLoan::route('/create'),
-            'edit'   => EditLoan::route('/{record}/edit'),
+            // 'create' => CreateLoan::route('/create'),
+            // 'edit'   => EditLoan::route('/{record}/edit'),
         ];
     }
 }

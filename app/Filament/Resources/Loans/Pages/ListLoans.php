@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Loans\Pages;
 
 use App\Filament\Resources\Loans\LoanResource;
+use App\Filament\Resources\Loans\Schemas\LoanForm;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -13,7 +14,12 @@ class ListLoans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->label('Pinjam Buku')
+                ->modalHeading('Pinjam Buku')
+                ->modalSubmitActionLabel('Simpan')
+                ->schema(fn() => LoanForm::configure(app(\Filament\Schemas\Schema::class))->getComponents())
+                ->visible(fn() => auth()->user()->can('Create:Loan')),
         ];
     }
 }
