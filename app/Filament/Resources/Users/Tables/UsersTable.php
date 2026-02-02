@@ -38,6 +38,11 @@ class UsersTable
                     ])
                     ->searchable(),
 
+                TextColumn::make('major.name')
+                    ->label('Jurusan')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('roles.name')
                     ->label('Role')
                     ->badge()
@@ -52,7 +57,7 @@ class UsersTable
                 //
             ])
             ->recordActions([
-                DeleteAction::make(),
+                DeleteAction::make()->visible(fn() => auth()->user()->can('Delete:User')),
 
                 EditAction::make()
                     ->modalHeading('Edit User')

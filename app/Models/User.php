@@ -23,7 +23,8 @@ class User extends Authenticatable
         'email',
         'password',
         'nis',
-        'kelas'
+        'kelas',
+        'major_id'
     ];
 
     /**
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function loans()
     {
         return $this->hasMany(Loan::class);
+    }
+
+    public function major()
+    {
+        return $this->belongsTo(Major::class);
     }
 }
